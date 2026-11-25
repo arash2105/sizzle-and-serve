@@ -6,7 +6,7 @@ import {
   DISHES, INGREDIENT_BY_ID, MAX_ORDERS, MAX_STRIKES, ORDER_SPAWN_EVERY,
   SHIFT_TIME,
 } from './config.js';
-import { pick } from './random.js';
+import { createRandom, pick } from './random.js';
 
 export const SCREEN_TITLE = 'title';
 export const SCREEN_PLAY = 'playing';
@@ -14,8 +14,9 @@ export const SCREEN_PAUSED = 'paused';
 export const SCREEN_OVER = 'gameover';
 
 export class World {
-  constructor(rng) {
-    this.rng = rng;
+  constructor(seed) {
+    this.seed = seed;
+    this.rng = createRandom(seed);
     this.best = 0;
     try {
       this.best = Number.parseInt(window.localStorage.getItem(BEST_KEY) ?? '0', 10) || 0;
@@ -26,6 +27,10 @@ export class World {
   }
 
   reset() {
+    // A fresh shift always starts from the same seed, so the title screen
+    // shows exactly the orders the shift will open with, and a seeded run
+    // replays the same way every time.
+    this.rng = createRandom(this.seed);
     this.screen = SCREEN_TITLE;
     this.score = 0;
     this.coins = 0;
@@ -45,13 +50,13 @@ export class World {
     this.soundQueue = [];
     this.audioCtx = null;
     this.servedFlash = 0; // seconds the serve bell glows after a serve
+    this.spawnOrder();
+    this.spawnOrder();
   }
 
   startShift() {
     this.reset();
     this.screen = SCREEN_PLAY;
-    this.spawnOrder();
-    this.spawnOrder();
     this.initAudio();
     this.playSound('click');
   }

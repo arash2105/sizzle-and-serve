@@ -15,9 +15,13 @@ export function zoneAt(x, y, world) {
   if (world.screen === SCREEN_OVER) return 'restart';
   if (world.screen === SCREEN_PAUSED) return 'resume';
   if (world.screen !== SCREEN_PLAY) return null;
-  if (inRect(x, y, BINS)) {
+  // The bins are a repeating row: find the slot, then check the click is
+  // inside that bin itself and not in the gap between two bins.
+  if (y >= BINS.y && y < BINS.y + BINS.h) {
     const i = Math.floor((x - BINS.x) / (BINS.w + BINS.gap));
-    if (i >= 0 && i < BIN_COUNT) return `bin-${i}`;
+    if (i >= 0 && i < BIN_COUNT && x < BINS.x + i * (BINS.w + BINS.gap) + BINS.w) {
+      return `bin-${i}`;
+    }
   }
   if (inRect(x, y, BOARD_STATION)) return 'board';
   if (inRect(x, y, PAN0)) return 'pan-0';
@@ -48,6 +52,7 @@ export function createInput(canvas, world, pointer, announce) {
     const p = toLogical(e);
     pointer.x = p.x;
     pointer.y = p.y;
+    pointer.zone = zoneAt(p.x, p.y, world);
     world.initAudio();
     activate(zoneAt(p.x, p.y, world));
   });

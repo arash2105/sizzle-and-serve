@@ -7,7 +7,6 @@
 // &seed=N) stages that scene instead of running the loop, paints it twice
 // and sets window.__shotReady for a screenshot.
 import { STEP, VIEW } from './config.js';
-import { createRandom } from './random.js';
 import { World, SCREEN_OVER, SCREEN_PAUSED, SCREEN_PLAY, SCREEN_TITLE } from './world.js';
 import { createInput } from './input.js';
 import { render } from './render.js';
@@ -27,10 +26,7 @@ canvas.width = VIEW.width;
 canvas.height = VIEW.height;
 const ctx = canvas.getContext('2d');
 
-const world = new World(createRandom(seed));
-// The title screen shows a live order board, so the kitchen never looks empty.
-world.spawnOrder();
-world.spawnOrder();
+const world = new World(seed);
 const pointer = { x: VIEW.width / 2, y: VIEW.height / 2, zone: null };
 createInput(canvas, world, pointer, announce);
 

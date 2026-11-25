@@ -27,8 +27,6 @@ export function stageShot(name, world) {
   if (name !== 'play' && name !== 'serve' && name !== 'end') {
     // Title over the kitchen, two orders waiting on the board.
     world.screen = SCREEN_TITLE;
-    world.spawnOrder();
-    world.spawnOrder();
     world.orders[0].timeLeft = 24;
     world.orders[1].timeLeft = 31;
     return { screen: SCREEN_TITLE };

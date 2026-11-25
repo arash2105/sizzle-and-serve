@@ -520,7 +520,7 @@ function drawHeld(ctx, world, pointer) {
   ctx.lineWidth = 2;
   ctx.stroke();
   drawIngredient(ctx, def.id, x + 20, y + 17, 11);
-  const state = world.held.state === 'burnt' ? 'BURNT' : world.held.prepped ? 'ready' : 'raw';
+  const state = world.held.state === 'burnt' ? 'BURNT' : world.held.state === 'cooked' ? 'cooked' : world.held.prepped ? 'ready' : 'raw';
   text(ctx, `${def.name} · ${state}`, x + 38, y + 22, '700 14px system-ui, sans-serif', '#2b2118');
 }
 
